@@ -28,7 +28,6 @@ function onRequest(req, res) {
 
 http.createServer(onRequest).listen(8888)
 */
-
 function say(word) {
   console.log(word);
 }
@@ -54,21 +53,33 @@ execute(function(word) { console.log(word) }, 'Hello');
 // });
 // console.log('Hello World');
 
-// Can we prove our code continues after creating the server?
 let http = require('http');
 let url = require('url');
 
-function start(route) {
+function start(route, handle) {
   function onRequest(req,res) {
+    // let postData = '';
     let pathname = url.parse(req.url).pathname;
     console.log(`Request for ${pathname} received.`);
-
-    route(pathname);
-
-    res.writeHead(200, { 'Content-type': 'text/plain' })
-    res.write('Hello world');
-    res.end();
+    route(handle, pathname, res, req);
   }
+  // req.setEncoding('utf8');
+
+  // put the data and end event callbacks in the server, collecting all POST data chunks in the data callback
+  // req.addListener('data', function(postDataChunk) {
+  //   postData += postDataChunk;
+  //   console.log(`Received POST data chunk ${postDataChunk}.`)
+  // })
+
+  // req.addListener('end', function() {
+  //   route(handle, pathname, res, postData);
+  // })
+
+  // res.writeHead(200, { 'Content-type': 'text/plain' })
+  // let content = route(handle, pathname);
+  // res.write(content);
+  // res.end();
+  // }
 
   http.createServer(onRequest).listen(8888);
   console.log('Server has started');
